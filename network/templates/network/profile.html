@@ -1,28 +1,8 @@
 {% extends "network/layout.html" %} {% load static %} {% block body %}
-<div id="title">
-  <h1>{{ request.user.username }}</h1>
-  <h2>All Posts</h2>
-</div>
 
-<!-- New Post Form -->
-{% if user.is_authenticated %}
-<div id="compose-view" class="card p-2 mb-4">
-  <form id="compose-form" method="post" action="{% url 'compose' %}">
-    <div class="form-group">
-      <label for="compose-body">New Post</label>
-      <textarea
-        class="form-control"
-        id="compose-body"
-        name="compose-body"
-        placeholder="Create a New Post"
-      ></textarea>
-    </div>
-    <div class="form-group">
-      <input type="submit" class="btn btn-primary btn-sm" value="Post" />
-    </div>
-  </form>
+<div id="title">
+  <h1>{{ username }}'s Profile</h1>
 </div>
-{% endif %}
 
 <!-- Show All Posts -->
 <div id="posts-view">
@@ -81,6 +61,7 @@
     {% endif %}
   </nav>
 </div>
+
 {% endblock %} {% block script %}
 <script src="{% static 'network/index.js' %}"></script>
 {% endblock %}

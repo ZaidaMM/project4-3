@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.shortcuts import HttpResponse, HttpResponseRedirect, render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.paginator import Paginator
 
 from .models import User, Post
 
@@ -13,8 +14,14 @@ from .models import User, Post
 def index(request):
     posts = Post.objects.all().order_by('id').reverse()
 
+    # Pagination, show 10 psots per page
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, "network/index.html", {
-        'posts': posts
+        'posts': posts,
+        'page_obj': page_obj
     })
 
 
@@ -75,7 +82,7 @@ def compose(request):
     if request.method == "POST":
         body = request.POST["compose-body"]
         user = User.objects.get(pk=request.user.id)
-        post = Post(body = body, user = user)
+        post = Post(content = body, user = user)
         post.save()
 
         return HttpResponseRedirect(reverse("index"))
@@ -89,9 +96,16 @@ def profile(request, user_id):
     # Filter posts by user
     posts = Post.objects.filter(user = user).order_by('id').reverse()
 
+    # Pagination, show 10 posts per page
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, "network/profile.html", {
         'posts': posts,
+        'page_obj': page_obj,
         'username': user.username,
         'profile_owner': user,
+      
     
     })
