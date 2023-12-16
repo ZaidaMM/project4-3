@@ -7,16 +7,19 @@ class User(AbstractUser):
     pass
 
 class Post(models.Model):
-    author = models.ForeignKey("User", on_delete=models.CASCADE, related_name='posts')
-    body = models.CharField(max_length=300)
+    user= models.ForeignKey("User", on_delete=models.CASCADE, related_name='posts')
+    content = models.CharField(max_length=300)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def serialize(self):
         return {
             "id": self.id,
-            "author": self.author,
-            "body": self.body,
+            "user": self.user,
+            "body": self.content,
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
-            "author_id": self.author.id,
-            "author_username": self.author.user.username
+            "user_id": self.user.id,
+            "user_username": self.user.username
         }
+
+    def __str__(self):
+        return f"{self.user.username} - {self.timestamp}"

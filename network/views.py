@@ -1,8 +1,11 @@
+import json
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import HttpResponse, HttpResponseRedirect, render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Post
 
@@ -62,5 +65,16 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
+@csrf_exempt
 def compose(request):
-    pass
+    # Creating a new post must be via POST
+    if request.method == "POST":
+        body = request.POST["compose-body"]
+        user = User.objects.get(pk=request.user.id)
+        post = Post(content = body, user = user)
+        post.save()
+
+        return HttpResponseRedirect(reverse("index"))
+   
+    else:
+        return JsonResponse({"error": "POST request required"}, status=400)
