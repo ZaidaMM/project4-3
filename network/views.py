@@ -11,7 +11,11 @@ from .models import User, Post
 
 
 def index(request):
-    return render(request, "network/index.html")
+    posts = Post.objects.all().order_by('id').reverse()
+
+    return render(request, "network/index.html", {
+        'posts': posts
+    })
 
 
 def login_view(request):
@@ -71,10 +75,23 @@ def compose(request):
     if request.method == "POST":
         body = request.POST["compose-body"]
         user = User.objects.get(pk=request.user.id)
-        post = Post(content = body, user = user)
+        post = Post(body = body, user = user)
         post.save()
 
         return HttpResponseRedirect(reverse("index"))
    
     else:
         return JsonResponse({"error": "POST request required"}, status=400)
+    
+def profile(request, user_id):
+    user = User.objects.get(pk=user_id)
+
+    # Filter posts by user
+    posts = Post.objects.filter(user = user).order_by('id').reverse()
+
+    return render(request, "network/profile.html", {
+        'posts': posts,
+        'username': user.username,
+        'profile_owner': user,
+    
+    })

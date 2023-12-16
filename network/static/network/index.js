@@ -4,6 +4,16 @@ document.addEventListener('DOMContentLoaded', function () {
   load_posts();
 });
 
-function load_posts() {
-  console.log('second');
+function load_posts(id) {
+  console.log(id);
+  const postsView = document.querySelector('#posts-view');
+
+  console.log(title);
+
+  // Show all posts
+  fetch(`profile/${user_id}`)
+    .then((response) => response.json())
+    .then((item) => {
+      console.log(item);
+    });
 }
