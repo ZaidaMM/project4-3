@@ -23,3 +23,8 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.timestamp}"
+
+class Follower(models.Model):
+    user = models.ForeignKey(User, blank=True, on_delete=models.CASCADE, related_name="follows", default="")
+    followers = models.ManyToManyField(User, blank=True, related_name="following_usrs", default="")
+    followed_users = models.ManyToManyField(User, blank=True, related_name="followed_usrs", default="")

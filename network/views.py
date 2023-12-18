@@ -109,3 +109,6 @@ def profile(request, user_id):
       
     
     })
+
+def following(request):
+    pass

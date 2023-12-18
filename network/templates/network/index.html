@@ -28,12 +28,62 @@
 <div id="posts-view">
   <div id="all-posts">
     {% for post in page_obj %}
-    <div class="card p-2">
+    <div class="row post card p-2">
       <h3>
         <a href="{% url 'profile' user_id=post.user.id%}">{{post.user}}</a>
       </h3>
       <p><i class="lh-1"></i>{{ post.content }}</p>
       <p class="text-secondary lh-1 small">{{ post.timestamp }}</p>
+      {% if user.is_authenticated %} {% if user == post.user %}
+      <div>
+        <button
+          class="btn btn-primary"
+          data-toggle="modal"
+          data-target="#modal_edit_{{ post.id }}"
+        >
+          Edit
+        </button>
+      </div>
+      <div
+        class="modal fade"
+        tabindex="-1"
+        role="dialog"
+        id="modal_edit_{{ post.id }}"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Modal title</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                aria-labelledby="modal_edit_{{ post.id }}_label"
+                aria-hidden="true"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary">
+                Save changes
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %} {% endif %}
     </div>
     {% empty %}
     <h3>No posts available</h3>
