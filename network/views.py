@@ -112,3 +112,11 @@ def profile(request, user_id):
 
 def following(request):
     pass
+
+def edit(request, post_id):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        edit_post = Post.objects.get(pk=post_id)
+        edit_post.content = data["content"]
+        edit_post.save()
+        return JsonResponse({"message": "Post edited successfully", "data":data["content"]})

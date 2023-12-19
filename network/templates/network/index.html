@@ -32,12 +32,12 @@
       <h3>
         <a href="{% url 'profile' user_id=post.user.id%}">{{post.user}}</a>
       </h3>
-      <p><i class="lh-1"></i>{{ post.content }}</p>
+      <p id="content_{{ post.id }}">{{ post.content }}</p>
       <p class="text-secondary lh-1 small">{{ post.timestamp }}</p>
       {% if user.is_authenticated %} {% if user == post.user %}
-      <div>
+      <div class="d-flex justify-content-aroud">
         <button
-          class="btn btn-primary"
+          class="btn btn-primary btn-sm"
           data-toggle="modal"
           data-target="#modal_edit_{{ post.id }}"
         >
@@ -45,32 +45,44 @@
         </button>
       </div>
       <div
-        class="modal fade"
+        class="modal fade show"
         tabindex="-1"
         role="dialog"
         id="modal_edit_{{ post.id }}"
+        aria-labelledby="modal_edit_{{ post.id }}_label"
       >
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Modal title</h5>
+              <h5 class="modal-title">Edit Post</h5>
               <button
                 type="button"
                 class="close"
                 data-dismiss="modal"
                 aria-label="Close"
-                aria-labelledby="modal_edit_{{ post.id }}_label"
                 aria-hidden="true"
               >
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-              <p>Modal body text goes here.</p>
+              <textarea
+                name="content"
+                id="textarea_{{ post.id }}"
+                cols="30"
+                rows="6"
+                class="p-2 form-control"
+              >
+{{ post.content }}</textarea
+              >
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary">
-                Save changes
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="submitHandler({{ post.id }})"
+              >
+                Submit changes
               </button>
               <button
                 type="button"
