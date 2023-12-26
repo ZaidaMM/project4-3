@@ -1,4 +1,5 @@
 {% extends "network/layout.html" %} {% load static %} {% block body %}
+
 <div id="title">
   <h1>{{ request.user.username }}</h1>
   <h2>All Posts</h2>
@@ -35,7 +36,7 @@
       <p id="content_{{ post.id }}">{{ post.content }}</p>
       <p class="text-secondary lh-1 small">{{ post.timestamp }}</p>
       {% if user.is_authenticated %} {% if user == post.user %}
-      <div class="d-flex justify-content-aroud">
+      <div>
         <button
           class="btn btn-primary btn-sm"
           data-toggle="modal"
@@ -45,7 +46,7 @@
         </button>
       </div>
       <div
-        class="modal fade show"
+        class="modal fade"
         tabindex="-1"
         role="dialog"
         id="modal_edit_{{ post.id }}"
@@ -80,7 +81,7 @@
               <button
                 type="button"
                 class="btn btn-primary"
-                onclick="submitHandler({{ post.id }})"
+                onclick="submitHandler('{{ post.id }}')"
               >
                 Submit changes
               </button>
@@ -95,10 +96,27 @@
           </div>
         </div>
       </div>
-      {% endif %} {% endif %}
+      {% else %} {% if post.id in postsLiked %}
+      <button
+        id="{{ post.id }}"
+        class="btn col-1 fa fa-heart"
+        style="color: red"
+        onclick="likeHandler('{{ post.id }}', '{{ postsLiked }}')"
+      ></button>
+      <!-- <span>{{likes_count}} Likes</span> -->
+
+      {% else %}
+
+      <button
+        id="{{ post.id }}"
+        class="btn col-1 fa fa-heart-o"
+        style="color: red"
+        onclick="likeHandler('{{ post.id }}', '{{ postsLiked }}')"
+      ></button>
+
+      <!-- <span>{{likes_count}} Likes</span> -->
+      {% endif %} {% endif %} {% endif %}
     </div>
-    {% empty %}
-    <h3>No posts available</h3>
     {% endfor %}
   </div>
 

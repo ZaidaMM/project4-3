@@ -8,8 +8,32 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 
-from .models import User, Post
+from .models import User, Post, Like
 
+def add_unlike(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    user = User.objects.get(pk=request.user.id)
+    like = Like.objects.filter(user=user, post=post)
+    like.delete()
+
+    return JsonResponse({"message": "Post unliked successfully",})
+
+def add_like(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    user = User.objects.get(pk=request.user.id)
+    newLike = Like(user=user, post=post)
+    newLike.save()
+
+    return JsonResponse({"message": "Post liked successfully",})
+
+def edit(request, post_id):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        edit_post = Post.objects.get(pk=post_id)
+        edit_post.content = data["content"]
+        edit_post.save()
+        return JsonResponse({"message": "Post edited successfully", "data":data["content"]})
+   
 
 def index(request):
     posts = Post.objects.all().order_by('id').reverse()
@@ -19,10 +43,26 @@ def index(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+
+    allLikes = Like.objects.all()
+
+    postsLiked = []
+
+    try:
+        for like in allLikes:
+            if like.user.id == request.user.id:
+                postsLiked.append(like.post.id)
+    except:
+        postsLiked = []
+
     return render(request, "network/index.html", {
         'posts': posts,
-        'page_obj': page_obj
+        'page_obj': page_obj,
+        'postsLiked': postsLiked
     })
+
+   
+
 
 
 def login_view(request):
@@ -113,10 +153,5 @@ def profile(request, user_id):
 def following(request):
     pass
 
-def edit(request, post_id):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        edit_post = Post.objects.get(pk=post_id)
-        edit_post.content = data["content"]
-        edit_post.save()
-        return JsonResponse({"message": "Post edited successfully", "data":data["content"]})
+
+    

@@ -35,3 +35,30 @@ function submitHandler(id) {
       }
     });
 }
+
+function likeHandler(id, postsLiked) {
+  console.log(id);
+  const btn = document.getElementById(`${id}`);
+
+  // Toggle between 'fa-heart' and 'fa-heart-o' classes
+  btn.classList.toggle('fa-heart');
+  btn.classList.toggle('fa-heart-o');
+
+  const liked = postsLiked.includes(id);
+
+  if (liked) {
+    fetch(`/add_unlike/${id}`)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => console.log('Error:', err));
+  } else {
+    fetch(`/add_like/${id}`)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => console.log('Error:', err));
+  }
+}
