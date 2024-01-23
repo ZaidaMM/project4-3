@@ -46,19 +46,37 @@ function likeHandler(id, postsLiked) {
 
   const liked = postsLiked.includes(id);
 
+  // const likeCount = post.like;
+
   if (liked) {
     fetch(`/add_unlike/${id}`)
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
+        document.querySelector('.like_count').innerHTML = result.like;
       })
-      .catch((err) => console.log('Error:', err));
+      .then(() => {
+        // Reload the page
+        window.location.reload();
+      })
+      .catch((err) => console.error('Error:', err))
+      .finally(() => {
+        console.log('Fetched, unliked');
+      });
   } else {
     fetch(`/add_like/${id}`)
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
+        document.querySelector('.like_count').innerHTML = result.like;
       })
-      .catch((err) => console.log('Error:', err));
+      .then(() => {
+        // Reload the page
+        window.location.reload();
+      })
+      .catch((err) => console.error('Error:', err))
+      .finally(() => {
+        console.log('Fetched, liked');
+      });
   }
 }

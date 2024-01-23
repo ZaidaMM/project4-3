@@ -16,6 +16,12 @@ def add_unlike(request, post_id):
     like = Like.objects.filter(user=user, post=post)
     like.delete()
 
+    if post.like <= 0:
+        return
+    else:
+        post.like -= 1
+        post.save()
+
     return JsonResponse({"message": "Post unliked successfully",})
 
 def add_like(request, post_id):
@@ -23,6 +29,11 @@ def add_like(request, post_id):
     user = User.objects.get(pk=request.user.id)
     newLike = Like(user=user, post=post)
     newLike.save()
+
+    post.like += 1
+    post.save()
+
+    # return HttpResponseRedirect(reverse("index"))
 
     return JsonResponse({"message": "Post liked successfully",})
 
@@ -32,6 +43,9 @@ def edit(request, post_id):
         edit_post = Post.objects.get(pk=post_id)
         edit_post.content = data["content"]
         edit_post.save()
+
+        # return HttpResponseRedirect(reverse("index"))
+    
         return JsonResponse({"message": "Post edited successfully", "data":data["content"]})
    
 
@@ -116,7 +130,7 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
-@csrf_exempt
+# @csrf_exempt
 def compose(request):
     # Creating a new post must be via POST
     if request.method == "POST":

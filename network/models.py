@@ -19,7 +19,8 @@ class Post(models.Model):
             "body": self.content,
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
             "user_id": self.user.id,
-            "user_username": self.user.username
+            "user_username": self.user.username,
+            "like": self.like
         }
 
     def __str__(self):

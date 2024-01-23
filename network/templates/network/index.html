@@ -9,6 +9,7 @@
 {% if user.is_authenticated %}
 <div id="compose-view" class="card p-2 mb-4">
   <form id="compose-form" method="post" action="{% url 'compose' %}">
+    {% csrf_token %}
     <div class="form-group">
       <label for="compose-body">New Post</label>
       <textarea
@@ -67,6 +68,7 @@
               </button>
             </div>
             <div class="modal-body">
+              {% csrf_token %}
               <textarea
                 name="content"
                 id="textarea_{{ post.id }}"
@@ -101,10 +103,12 @@
         id="{{ post.id }}"
         class="btn col-1 fa fa-heart"
         style="color: red"
-        onclick="likeHandler('{{ post.id }}', '{{ postsLiked }}')"
+        onclick="likeHandler('{{ post.id }}', '{{ postsLiked }}', '{{likeCount}}')"
       ></button>
-      <!-- <span>{{likes_count}} Likes</span> -->
-
+      <p>
+        <span class="like_count">Likes: {{ post.like }} </span>
+        {% if post.like == 1 %} like {% else %} likes {% endif %}
+      </p>
       {% else %}
 
       <button
@@ -114,7 +118,10 @@
         onclick="likeHandler('{{ post.id }}', '{{ postsLiked }}')"
       ></button>
 
-      <!-- <span>{{likes_count}} Likes</span> -->
+      <p>
+        <span class="like_count">Likes: {{ post.like }} </span>
+        {% if post.like == 1 %} like {% else %} likes {% endif %}
+      </p>
       {% endif %} {% endif %} {% endif %}
     </div>
     {% endfor %}
