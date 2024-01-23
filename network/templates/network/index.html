@@ -1,8 +1,8 @@
 {% extends "network/layout.html" %} {% load static %} {% block body %}
 
 <div id="title">
-  <h1>{{ request.user.username }}</h1>
-  <h2>All Posts</h2>
+  <h1 class="mt-4">{{ request.user.username }}</h1>
+  <h3>All Posts</h3>
 </div>
 
 <!-- New Post Form -->
@@ -46,6 +46,10 @@
           Edit
         </button>
       </div>
+      <p class="mt-2">
+        <span class="like_count">Likes: {{ post.like }} </span>
+        {% if post.like == 1 %} like {% else %} likes {% endif %}
+      </p>
       <div
         class="modal fade"
         tabindex="-1"
