@@ -105,7 +105,7 @@
       {% else %} {% if post.id in postsLiked %}
       <button
         id="{{ post.id }}"
-        class="btn col-1 fa fa-heart"
+        class="btn col-1 fa fa-heart text-left"
         style="color: red"
         onclick="likeHandler('{{ post.id }}', '{{ postsLiked }}', '{{likeCount}}')"
       ></button>
@@ -117,7 +117,7 @@
 
       <button
         id="{{ post.id }}"
-        class="btn col-1 fa fa-heart-o"
+        class="btn col-1 fa fa-heart-o text-left"
         style="color: red"
         onclick="likeHandler('{{ post.id }}', '{{ postsLiked }}')"
       ></button>
