@@ -4,7 +4,8 @@ from django.utils import timezone
 
 
 class User(AbstractUser):
-    pass
+    followers= models.ManyToManyField("self", symmetrical=False, related_name='following', blank=True)
+    
 
 class Post(models.Model):
     user= models.ForeignKey("User", on_delete=models.CASCADE, related_name='posts')

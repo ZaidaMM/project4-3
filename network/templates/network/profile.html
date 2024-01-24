@@ -4,6 +4,18 @@
   <h1 class="mt-4 mb-2">{{ username }}'s Profile</h1>
 </div>
 
+<div>
+  {% if user != request.user %}
+  <button id="followBtn" onclick="followUnfollow('{{ user.id }}')">
+    {% if request.user in user.followers.all %} Unfollow {% else %} Follow
+    {%endif %}
+  </button>
+  {% endif %}
+
+  <p id="followingCount">Following: {{ user.following.count }}</p>
+  <p id="followersCount">Followers: {{ user.followers.count }}</p>
+</div>
+
 <!-- Show All Posts -->
 <div id="posts-view">
   <div id="all-posts">

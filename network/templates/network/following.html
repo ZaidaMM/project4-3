@@ -1,0 +1,14 @@
+{% extends "network/layout.html" %} {% load static %} {% block body %}
+
+<h1>Posts from Users You Are Following</h1>
+
+{% for post in following_posts %}
+<div class="post">
+  <h3>{{ post.user.username }}</h3>
+  <p>{{ post.content }}</p>
+  <p>{{ post.timestamp }}</p>
+  <hr />
+</div>
+{% endfor %} {% endblock %} {% block script %}
+<script type="module" src="{% static 'network/index.js' %}"></script>
+{% endblock %}

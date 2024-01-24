@@ -3,12 +3,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import JsonResponse
-from django.shortcuts import HttpResponse, HttpResponseRedirect, render
+from django.shortcuts import HttpResponse, HttpResponseRedirect, render, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 
-from .models import User, Post, Like
+from .models import User, Post, Like, Follower
 
 def add_unlike(request, post_id):
     post = Post.objects.get(pk=post_id)
@@ -145,7 +145,7 @@ def compose(request):
         return JsonResponse({"error": "POST request required"}, status=400)
     
 def profile(request, user_id):
-    user = User.objects.get(pk=user_id)
+    user = get_object_or_404(User, id=user_id)
 
     # Filter posts by user
     posts = Post.objects.filter(user = user).order_by('id').reverse()
@@ -165,7 +165,38 @@ def profile(request, user_id):
     })
 
 def following(request):
-    pass
+    # Get the users the current user is following
+    following_users = Follower.objects.filter(follower=request.user).values_list('followed', flat=True)
+
+    # Get posts from the users the current user is following
+    following_posts = Post.objects.filter(user__in=following_users).order_by('-timestamp')
+
+    context = {
+        'following_posts': following_posts,
+    }
+
+    return render(request, 'network/following.html', context)
+
+def follow_unfollow(request, user_id):
+    target_user = User.objects.get(pk=user_id)
+
+    if request.user in target_user.followers.all():
+        request.user.following.remove(target_user)
+        following_count = request.user.following.count()
+        is_following = False
+    else:
+        request.user.following.add(target_user)
+        following_count = request.user.following.count()
+        is_following = True
+
+    return JsonResponse({
+        'message': 'Follow/Unfollow successful',
+        'following_count': following_count,
+        'is_following': is_following
+    })
+                
+
+
 
 
     
