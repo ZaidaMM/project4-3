@@ -11,31 +11,27 @@ from django.core.paginator import Paginator
 from .models import User, Post, Like, Follower
 
 def add_unlike(request, post_id):
-    post = Post.objects.get(pk=post_id)
-    user = User.objects.get(pk=request.user.id)
+    post = get_object_or_404(Post, pk=post_id)
+    user = get_object_or_404(User, pk=request.user.id)
     like = Like.objects.filter(user=user, post=post)
     like.delete()
 
-    if post.like <= 0:
-        return
-    else:
+    if post.like > 0:
         post.like -= 1
         post.save()
 
-    return JsonResponse({"message": "Post unliked successfully",})
+    return JsonResponse({"message": "Post unliked successfully", "like": post.like})
 
 def add_like(request, post_id):
-    post = Post.objects.get(pk=post_id)
-    user = User.objects.get(pk=request.user.id)
-    newLike = Like(user=user, post=post)
-    newLike.save()
+    post = get_object_or_404(Post, pk=post_id)
+    user = get_object_or_404(User, pk=request.user.id)
+    new_like = Like(user=user, post=post)
+    new_like.save()
 
     post.like += 1
     post.save()
 
-    # return HttpResponseRedirect(reverse("index"))
-
-    return JsonResponse({"message": "Post liked successfully",})
+    return JsonResponse({"message": "Post liked successfully", "like": post.like} )
 
 def edit(request, post_id):
     if request.method == "POST":

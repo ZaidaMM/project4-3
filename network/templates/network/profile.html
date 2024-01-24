@@ -27,8 +27,9 @@
       <p><i class="lh-1"></i>{{ post.content }}</p>
       <p class="text-secondary lh-1 small">{{ post.timestamp }}</p>
       <p>
-        <span class="like_count">Likes: {{ post.like }} </span>
-        {% if post.like == 1 %} like {% else %} likes {% endif %}
+        <span class="like_count" id="like_count_{{post.id}}"
+          >Likes: {{ post.like }}
+        </span>
       </p>
     </div>
     {% empty %}

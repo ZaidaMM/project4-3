@@ -110,8 +110,10 @@
         onclick="likeHandler('{{ post.id }}', '{{ postsLiked }}', '{{likeCount}}')"
       ></button>
       <p>
-        <span class="like_count">Likes: {{ post.like }} </span>
-        {% if post.like == 1 %} like {% else %} likes {% endif %}
+        <span class="like_count" id="like_count_{{post.id}}"
+          >Likes: {{ post.like }} {% if post.like == 1 %} like {% else %} likes
+          {% endif %}
+        </span>
       </p>
       {% else %}
 
@@ -119,12 +121,13 @@
         id="{{ post.id }}"
         class="btn col-1 fa fa-heart-o text-left"
         style="color: red"
-        onclick="likeHandler('{{ post.id }}', '{{ postsLiked }}')"
+        onclick="likeHandler('{{ post.id }}', '{{ postsLiked }}', '{{likeCount}}')"
       ></button>
 
       <p>
-        <span class="like_count">Likes: {{ post.like }} </span>
-        {% if post.like == 1 %} like {% else %} likes {% endif %}
+        <span class="like_count" id="like_count_{{post.id}}"
+          >Likes: {{ post.like }}
+        </span>
       </p>
       {% endif %} {% endif %} {% endif %}
     </div>
