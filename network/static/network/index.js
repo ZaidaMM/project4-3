@@ -86,17 +86,16 @@ function followUnfollow(id) {
     .then((response) => response.json())
     .then((result) => {
       console.log(result.message);
-      console.log(id);
 
       const followBtn = document.getElementById('followBtn');
-      const followingCount = document.getElementById('followingCount');
+      const followersCount = document.getElementById('followersCount');
 
       if (followBtn) {
         followBtn.innerText = result.is_following ? 'Unfollow' : 'Follow';
       }
 
-      if (followingCount) {
-        followingCount.innerText = `Following: ${result.following_count}`;
+      if (followersCount) {
+        followersCount.innerText = `Followers: ${result.following_count}`;
       }
     })
     .catch((err) => console.error('Error:', err));

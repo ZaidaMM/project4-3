@@ -174,23 +174,28 @@ def following(request):
     return render(request, 'network/following.html', context)
 
 def follow_unfollow(request, user_id):
-    target_user = User.objects.get(pk=user_id)
+    target_user = get_object_or_404(User, id=user_id)
 
-    if request.user in target_user.followers.all():
-        request.user.following.remove(target_user)
-        following_count = request.user.following.count()
-        is_following = False
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Authentication required'}, status=401)
+
+    is_following = Follower.objects.filter(follower=request.user, followed=target_user).exists()
+
+    if is_following:
+        # If already following, unfollow
+        Follower.objects.filter(follower=request.user, followed=target_user).delete()
     else:
-        request.user.following.add(target_user)
-        following_count = request.user.following.count()
-        is_following = True
+        # If not following, follow
+        Follower.objects.create(follower=request.user, followed=target_user)
+
+    followers_count = target_user.followers.count()
 
     return JsonResponse({
-        'message': 'Follow/Unfollow successful',
-        'following_count': following_count,
-        'is_following': is_following
-    })
-                
+        'message': f'{"Un" if not is_following else ""}followed successfully',
+        'is_following': not is_following,  # Toggle the value since we're updating
+        'followers_count': followers_count,
+        'target_user': target_user
+    })   
 
 
 
