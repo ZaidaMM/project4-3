@@ -52,8 +52,6 @@ function likeHandler(id, postsLiked) {
       .then((result) => {
         console.log(result);
         updateLikeCount(id, result.like);
-        // let update = document.querySelector('.like-count');
-        // update.innerHTML = result.like;
         console.log(result.like);
       })
       .catch((err) => console.error('Error:', err))
@@ -66,8 +64,6 @@ function likeHandler(id, postsLiked) {
       .then((result) => {
         console.log(result);
         updateLikeCount(id, result.like);
-        // let update = document.querySelector('.like-count');
-        // update.innerHTML = result.like;
         console.log(result.like);
       })
       .catch((err) => console.error('Error:', err))
@@ -75,38 +71,6 @@ function likeHandler(id, postsLiked) {
         console.log('Fetched, liked');
       });
   }
-
-  // if (liked) {
-  //   fetch(`/add_unlike/${id}`)
-  //     .then((response) => response.json())
-  //     .then((result) => {
-  //       console.log(result);
-  //       document.querySelector('.like_count').innerHTML = result.like;
-  //     })
-  //     .then(() => {
-  //       // Reload the page
-  //       window.location.reload();
-  //     })
-  //     .catch((err) => console.error('Error:', err))
-  //     .finally(() => {
-  //       console.log('Fetched, unliked');
-  //     });
-  // } else {
-  //   fetch(`/add_like/${id}`)
-  //     .then((response) => response.json())
-  //     .then((result) => {
-  //       console.log(result);
-  //       document.querySelector('.like_count').innerHTML = result.like;
-  //     })
-  //     .then(() => {
-  //       // Reload the page
-  //       window.location.reload();
-  //     })
-  //     .catch((err) => console.error('Error:', err))
-  //     .finally(() => {
-  //       console.log('Fetched, liked');
-  //     });
-  // }
 }
 
 function updateLikeCount(postId, likeCount) {
