@@ -4,7 +4,22 @@ from django.utils import timezone
 
 
 class User(AbstractUser):
-    followers= models.ManyToManyField("self", symmetrical=False, related_name='following', blank=True)
+    followers = models.ManyToManyField("self", symmetrical=False, related_name='following', blank=True)
+
+    @property
+    def following_count(self):
+        return self.following.count()
+
+    @property
+    def followers_count(self):
+        return self.followers.count()
+    
+    @property
+    def following_list(self):
+        return self.following.all()
+
+    def __str__(self):
+        return self.username
     
 
 class Post(models.Model):

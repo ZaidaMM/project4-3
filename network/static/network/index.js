@@ -81,24 +81,63 @@ function updateLikeCount(postId, likeCount) {
   }
 }
 
-function followUnfollow(id) {
-  fetch(`/follow_unfollow/${id}`)
+// function followUnfollow(id) {
+//   console.log(id);
+//   fetch(`/follow_unfollow/${id}`)
+//     .then((response) => {
+//       // console.log(response);
+//       // if (!response.ok) {
+//       //   throw new Error('Network response was not ok');
+//       // }
+//       return response.json();
+//     })
+//     .then((result) => {
+//       console.log(result.message);
+//       console.log(result);
+//       console.log(user.is_following);
+
+//       const followBtn = document.getElementById('followBtn');
+//       const userId = result.user_info.id;
+//       const username = result.user_info.username;
+//       const followersCount = result.user_info.followers_count;
+//       const followingCount = result.user_info.following_count;
+
+//       const isOwnProfile = user === result.user_id;
+
+//       if (isOwnProfile) {
+//         console.log(
+//           "This is the user's own profile. Do not perform follow/unfollow actions."
+//         );
+//         return;
+//       }
+//       if (followBtn) {
+//         followBtn.innerText = result.is_following ? 'Unfollow' : 'Follow';
+//       }
+
+//       if (followersCount) {
+//         followersCount.innerText = `Followers: ${followersCount}`;
+//       }
+
+//       if (followingCount) {
+//         followingCount.innerText = `Followers: ${followingCount}`;
+//       }
+//     })
+//     .catch((err) => console.error('Error:', err));
+// }
+
+async function followUnfollow(user_id) {
+  fetch(`/follow_unfollow/${user_id}`, {
+    method: 'POST',
+  })
     .then((response) => response.json())
     .then((result) => {
-      console.log(result.message);
+      document.getElementById('follow-btn').innerHTML = `${result.stat}`;
+      document.getElementById(
+        'follow-data'
+      ).innerHTML = `Followers: ${result.followers} | Following: ${result.following}`;
+    });
 
-      const followBtn = document.getElementById('followBtn');
-      const followersCount = document.getElementById('followersCount');
-
-      if (followBtn) {
-        followBtn.innerText = result.is_following ? 'Unfollow' : 'Follow';
-      }
-
-      if (followersCount) {
-        followersCount.innerText = `Followers: ${result.following_count}`;
-      }
-    })
-    .catch((err) => console.error('Error:', err));
+  false;
 }
 
 function redirectToFollowingPage() {

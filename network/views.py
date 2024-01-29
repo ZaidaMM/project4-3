@@ -173,31 +173,64 @@ def following(request):
 
     return render(request, 'network/following.html', context)
 
-def follow_unfollow(request, user_id):
-    target_user = get_object_or_404(User, id=user_id)
+# def follow_unfollow(request, user_id):
+#   try:
+#     target_user = get_object_or_404(User, pk=user_id)
 
-    if not request.user.is_authenticated:
-        return JsonResponse({'error': 'Authentication required'}, status=401)
+#     # if request.method == 'GET':
+#         # Serialize the user information
+#         # user_info = target_user.serialize()
 
-    is_following = Follower.objects.filter(follower=request.user, followed=target_user).exists()
-
-    if is_following:
-        # If already following, unfollow
-        Follower.objects.filter(follower=request.user, followed=target_user).delete()
-    else:
-        # If not following, follow
-        Follower.objects.create(follower=request.user, followed=target_user)
-
-    followers_count = target_user.followers.count()
-
-    return JsonResponse({
-        'message': f'{"Un" if not is_following else ""}followed successfully',
-        'is_following': not is_following,  # Toggle the value since we're updating
-        'followers_count': followers_count,
-        'target_user': target_user
-    })   
+#         # return JsonResponse({'user_info': user_info})
 
 
 
-
+#     if not request.user.is_authenticated:
+#         return JsonResponse({'error': 'Authentication required'}, status=401)
     
+
+#     # Handle the follow/unfollow logic
+#     if request.method == 'POST':
+#         current_user = request.user
+#         is_following = Follower.objects.filter(follower=request.user, followed=target_user).exists()
+
+#         if is_following:
+#         # If already following, unfollow
+#             Follower.objects.filter(follower=current_user, followed=target_user).delete()
+#             message = f'You have unfollowed {target_user.username}.'
+#         else:
+#         # If not following, follow
+#             Follower.objects.create(follower=current_user, followed=target_user)
+#             message = f'You are now following {target_user.username}.'
+
+#         followers_count = target_user.followers.count()
+#         following_count = target_user.following.count()
+
+
+
+#         return JsonResponse({
+#             'message': message,
+#             'is_following': not is_following,  
+#             'followers_count': followers_count,
+#             'following_count': following_count,
+#             # 'user': target_user.serialize()
+#         })  
+    
+#   except Exception as e:
+#      import traceback
+#      traceback.print_exc()
+
+#      return JsonResponse({'error': str(e),'traceback': traceback.format_exc()}, status=500)
+
+def follow_unfollow(request, user_id):
+    followed_user = Follower.objects.get(user=request.user).followed_users.all()
+    posts = Post.objects.filter(user__in=followed_user)
+
+   
+
+    return render(request, "network/profile.html", {
+        "posts": posts,
+      
+    })
+
+
