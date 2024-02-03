@@ -76,7 +76,8 @@ function likeHandler(id, postsLiked) {
 function updateLikeCount(postId, likeCount) {
   const likeCountElement = document.getElementById(`like_count_${postId}`);
   if (likeCountElement) {
-    likeCountElement.innerHTML = `Likes: ${likeCount}`;
-    console.log(likeCount);
+    const likePlural = likeCount === 1 ? 'like' : 'likes';
+    likeCountElement.innerHTML = `Likes: ${likeCount} ${likePlural}`;
   }
+  console.log(likeCount);
 }

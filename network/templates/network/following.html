@@ -1,6 +1,8 @@
 {% extends "network/layout.html" %} {% load static %} {% block body %}
 
-<h2>{{ username }} is Following:</h2>
+<div id="title" class="row my-3">
+  <h1 class>{{ username }} is Following:</h1>
+</div>
 
 
   <!-- Show all posts -->
@@ -17,7 +19,8 @@
       <p class="text-secondary lh-1 small">{{ post.timestamp }}</p>
       <p>
         <span class="like_count" id="like_count_{{post.id}}"
-          >Likes: {{ post.like }}
+          >Likes: {{ post.like }} {% if post.like == 1 %} like {% else %} likes
+          {% endif %}
         </span>
       </p>
     </div>

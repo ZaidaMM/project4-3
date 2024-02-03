@@ -1,8 +1,10 @@
 {% extends "network/layout.html" %} {% load static %} {% block body %}
 
-<div id="title">
+<div id="title" class="row my-3">
+  {% comment %}
   <h1 class="mt-4">{{ request.user.username }}</h1>
-  <h3>All Posts</h3>
+  {% endcomment %}
+  <h1>All Posts</h1>
 </div>
 
 <!-- New Post Form -->
@@ -36,7 +38,13 @@
       </h3>
       <p id="content_{{ post.id }}">{{ post.content }}</p>
       <p class="text-secondary lh-1 small">{{ post.timestamp }}</p>
-      {% if user.is_authenticated %} {% if user == post.user %}
+      {% if user.is_authenticated %} {% if user == post.author %}
+      <p>
+        <span class="like_count" id="like_count_{{post.id}}"
+          >Likes: {{ post.like }} {% if post.like == 1 %} like {% else %} likes
+          {% endif %}
+        </span>
+      </p>
       <div>
         <button
           class="btn btn-primary btn-sm"
@@ -46,10 +54,7 @@
           Edit
         </button>
       </div>
-      <p class="mt-2">
-        <span class="like_count">Likes: {{ post.like }} </span>
-        {% if post.like == 1 %} like {% else %} likes {% endif %}
-      </p>
+
       <div
         class="modal fade"
         tabindex="-1"
@@ -126,7 +131,8 @@
 
       <p>
         <span class="like_count" id="like_count_{{post.id}}"
-          >Likes: {{ post.like }}
+          >Likes: {{ post.like }} {% if post.like == 1 %} like {% else %} likes
+          {% endif %}
         </span>
       </p>
       {% endif %} {% endif %} {% endif %}

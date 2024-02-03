@@ -139,7 +139,8 @@ def compose(request):
    
     else:
         return JsonResponse({"error": "POST request required"}, status=400)
-    
+
+ 
 def profile(request, user_id):
     user = get_object_or_404(User, id=user_id)
     current_user = request.user
