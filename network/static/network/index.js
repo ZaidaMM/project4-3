@@ -125,21 +125,21 @@ function updateLikeCount(postId, likeCount) {
 //     .catch((err) => console.error('Error:', err));
 // }
 
-async function followUnfollow(user_id) {
-  fetch(`/follow_unfollow/${user_id}`, {
-    method: 'POST',
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      document.getElementById('follow-btn').innerHTML = `${result.stat}`;
-      document.getElementById(
-        'follow-data'
-      ).innerHTML = `Followers: ${result.followers} | Following: ${result.following}`;
-    });
+// async function followUnfollow(user_id) {
+//   fetch(`/follow_unfollow/${user_id}`, {
+//     method: 'POST',
+//   })
+//     .then((response) => response.json())
+//     .then((result) => {
+//       document.getElementById('follow-btn').innerHTML = `${result.stat}`;
+//       document.getElementById(
+//         'follow-data'
+//       ).innerHTML = `Followers: ${result.followers} | Following: ${result.following}`;
+//     });
 
-  false;
-}
+//   false;
+// }
 
-function redirectToFollowingPage() {
-  window.location.href = '/following/';
-}
+// function redirectToFollowingPage() {
+//   window.location.href = '/following/';
+// }

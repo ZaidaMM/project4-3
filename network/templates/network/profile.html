@@ -10,13 +10,38 @@
   {% if username != user.username %}
 
   <!-- Display follow/unfollow button for other users -->
-  <button
-    id="followBtn"
-    class="btn btn-primary mb-4 btn-sm"
-    onclick="followUnfollow({{ user.id }})"
-  >
-    Follow
-  </button>
+  <form action="{% url 'follow_unfollow' user_id=user.id %}" method="POST">
+    {% csrf_token %} 
+    {% if isFollowing %}
+    <p>UNFOLLOW</p>
+    <button
+      id="followBtn"
+      class="btn btn-primary mb-4 btn-sm"
+      onclick="console.log("unfollow"))"
+    >
+      Unfollow
+    </button>
+    {% else %}
+    <p>FOLLOW</p>
+    <button
+      id="followBtn"
+      class="btn btn-primary mb-4 btn-sm"
+      onclick="console.log("follow"))"
+    >
+      Follow
+    </button>
+    {% endif %}
+  
+    {% if isFollowing %}
+    <button
+      id="followBtn"
+      class="btn btn-primary mb-4 btn-sm"
+      onclick="console.log("follow"))"
+    >
+      Follow
+    </button>
+    {% endif %}
+  </form>
   {% endif %}
 </div>
 <!-- Show All Posts -->
@@ -25,7 +50,7 @@
     {% for post in page_obj %}
     <div class="card p-2">
       <h3>
-        <a href="{% url 'profile' user_id=post.user.id%}">{{post.user}}</a>
+        <a href="{% url 'profile' user_id=post.author.id%}">{{post.user}}</a>
       </h3>
       <p><i class="lh-1"></i>{{ post.content }}</p>
       <p class="text-secondary lh-1 small">{{ post.timestamp }}</p>

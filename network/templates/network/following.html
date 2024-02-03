@@ -1,14 +1,69 @@
 {% extends "network/layout.html" %} {% load static %} {% block body %}
 
-<h1>Posts from Users You Are Following</h1>
+<h2>{{ username }} is Following:</h2>
 
-{% for post in following_posts %}
-<div class="post">
-  <h3>{{ post.user.username }}</h3>
-  <p>{{ post.content }}</p>
-  <p>{{ post.timestamp }}</p>
-  <hr />
+
+  <!-- Show all posts -->
+  <div id="all-posts">
+    {% for post in page_obj %}
+    <div class="card mb-2 p-3">
+    <h3>
+      <a href="{% url 'profile' user_id=post.author.id %}"
+        >{{ post.author }}</a
+      >
+    </h3>
+    
+      <p><i class="lh-1"></i>{{ post.body }}</p>
+      <p class="text-secondary lh-1 small">{{ post.timestamp }}</p>
+      <p class="text-secondary lh-1 small">Likes: XX (TODO)</p>
+    </div>
+    {% empty %}
+    <h3>Not following any users yet</h3>
+    {% endfor %}
+  </div>
+
+  <!-- Nav for pagination -->
+  <nav aria-label="All Posts navigation">
+    {% if page_obj.has_other_pages %}
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}"
+          >Previous</a
+        >
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">Previous</span>
+      </li>
+      {% endif %} {{""}} {% for page_number in page_obj.paginator.page_range%}
+      {{""}} {% if page_obj.number == page_number %}
+      <li class="active page-item">
+        <span class="page-link"
+          >{{ page_number }} <span class="sr-only">(current)</span></span
+        >
+      </li>
+      {% else %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_number }}"
+          >{{ page_number }}</a
+        >
+      </li>
+      {% endif %} {% endfor %} {% if page_obj.has_next %}
+
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}"
+          >Next</a
+        >
+      </li>
+      {% else %}
+      <li class="disabled page-item"><span class="page-link">Next</span></li>
+      {% endif %}
+    </ul>
+    {% endif %}
+  </nav>
 </div>
-{% endfor %} {% endblock %} {% block script %}
+
+{% endblock %} {% block script %}
 <script src="{% static 'network/index.js' %}"></script>
 {% endblock %}

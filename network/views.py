@@ -132,7 +132,7 @@ def compose(request):
     if request.method == "POST":
         body = request.POST["compose-body"]
         user = User.objects.get(pk=request.user.id)
-        post = Post(content = body, user = user)
+        post = Post(content = body, author = user)
         post.save()
 
         return HttpResponseRedirect(reverse("index"))
@@ -144,7 +144,20 @@ def profile(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
     # Filter posts by user
-    posts = Post.objects.filter(user = user).order_by('id').reverse()
+    posts = Post.objects.filter(author = user).order_by('id').reverse()
+
+    following = Follower.objects.filter(follower=user)
+    followers = Follower.objects.filter(followed=user)
+
+    try:
+        check = followers.filter(user=User.objects.get(pk=request.user.id))
+        if len(check) != 0:
+            isFollowing = True
+        else:
+            isFollowing = False
+    
+    except:
+        isFollowing = False
 
     # Pagination, show 10 posts per page
     paginator = Paginator(posts, 10)
@@ -156,81 +169,37 @@ def profile(request, user_id):
         'page_obj': page_obj,
         'username': user.username,
         'profile_owner': user,
+        'followers':followers,
+        'following':following,
+        'isFollowing':isFollowing,
       
     
     })
 
 def following(request):
-    # Get the users the current user is following
-    following_users = Follower.objects.filter(follower=request.user).values_list('followed', flat=True)
+    current_user = User.objects.get(pk=request.user.id)
+    followingUsers = Follower.objects.filter(follower=current_user)
 
-    # Get posts from the users the current user is following
-    following_posts = Post.objects.filter(user__in=following_users).order_by('-timestamp')
+    # Filter posts by user
+    posts_list = Post.objects.all().order_by('id').reverse()  
 
-    context = {
-        'following_posts': following_posts,
-    }
+    follPosts = []
 
-    return render(request, 'network/following.html', context)
+    for post in posts_list:
+        for person in followingUsers:
+            if person.followed == post.author:
+                follPosts.append(post)
 
-# def follow_unfollow(request, user_id):
-#   try:
-#     target_user = get_object_or_404(User, pk=user_id)
+    # Pagination, show 10 posts per page
+    paginator = Paginator(follPosts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-#     # if request.method == 'GET':
-#         # Serialize the user information
-#         # user_info = target_user.serialize()
-
-#         # return JsonResponse({'user_info': user_info})
-
-
-
-#     if not request.user.is_authenticated:
-#         return JsonResponse({'error': 'Authentication required'}, status=401)
-    
-
-#     # Handle the follow/unfollow logic
-#     if request.method == 'POST':
-#         current_user = request.user
-#         is_following = Follower.objects.filter(follower=request.user, followed=target_user).exists()
-
-#         if is_following:
-#         # If already following, unfollow
-#             Follower.objects.filter(follower=current_user, followed=target_user).delete()
-#             message = f'You have unfollowed {target_user.username}.'
-#         else:
-#         # If not following, follow
-#             Follower.objects.create(follower=current_user, followed=target_user)
-#             message = f'You are now following {target_user.username}.'
-
-#         followers_count = target_user.followers.count()
-#         following_count = target_user.following.count()
-
-
-
-#         return JsonResponse({
-#             'message': message,
-#             'is_following': not is_following,  
-#             'followers_count': followers_count,
-#             'following_count': following_count,
-#             # 'user': target_user.serialize()
-#         })  
-    
-#   except Exception as e:
-#      import traceback
-#      traceback.print_exc()
-
-#      return JsonResponse({'error': str(e),'traceback': traceback.format_exc()}, status=500)
-
-def follow_unfollow(request, user_id):
-    followed_user = Follower.objects.get(user=request.user).followed_users.all()
-    posts = Post.objects.filter(user__in=followed_user)
-
+    return render(request, "network/following.html", {
+        'page_obj': page_obj,
+        'username': current_user,
    
-
-    return render(request, "network/profile.html", {
-        "posts": posts,
-      
     })
 
-
+def follow_unfollow(request):
+    pass

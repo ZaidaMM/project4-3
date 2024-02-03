@@ -4,26 +4,10 @@ from django.utils import timezone
 
 
 class User(AbstractUser):
-    followers = models.ManyToManyField("self", symmetrical=False, related_name='following', blank=True)
-
-    @property
-    def following_count(self):
-        return self.following.count()
-
-    @property
-    def followers_count(self):
-        return self.followers.count()
-    
-    @property
-    def following_list(self):
-        return self.following.all()
-
-    def __str__(self):
-        return self.username
-    
+    pass    
 
 class Post(models.Model):
-    user= models.ForeignKey("User", on_delete=models.CASCADE, related_name='posts')
+    author= models.ForeignKey("User", on_delete=models.CASCADE, related_name='posts')
     content = models.CharField(max_length=300)
     timestamp = models.DateTimeField(auto_now_add=True)
     like = models.IntegerField(default=0)
@@ -31,7 +15,7 @@ class Post(models.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "user": self.user,
+            "author": self.author,
             "body": self.content,
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
             "user_id": self.user.id,
@@ -48,6 +32,9 @@ class Follower(models.Model):
 
     def __str__(self):
         return f"{self.follower} follows {self.followed}"
+    
+    def get_list_followed_posts(self):
+        return self.followed.posts
     
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_liked", default="")
