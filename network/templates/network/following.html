@@ -15,7 +15,11 @@
     
       <p><i class="lh-1"></i>{{ post.body }}</p>
       <p class="text-secondary lh-1 small">{{ post.timestamp }}</p>
-      <p class="text-secondary lh-1 small">Likes: XX (TODO)</p>
+      <p>
+        <span class="like_count" id="like_count_{{post.id}}"
+          >Likes: {{ post.like }}
+        </span>
+      </p>
     </div>
     {% empty %}
     <h3>Not following any users yet</h3>
