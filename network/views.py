@@ -142,22 +142,15 @@ def compose(request):
     
 def profile(request, user_id):
     user = get_object_or_404(User, id=user_id)
+    current_user = request.user
 
     # Filter posts by user
-    posts = Post.objects.filter(author = user).order_by('id').reverse()
+    posts = Post.objects.filter(author=user).order_by('id').reverse()
 
     following = Follower.objects.filter(follower=user)
     followers = Follower.objects.filter(followed=user)
 
-    try:
-        check = followers.filter(user=User.objects.get(pk=request.user.id))
-        if len(check) != 0:
-            isFollowing = True
-        else:
-            isFollowing = False
-    
-    except:
-        isFollowing = False
+    isFollowing = followers.filter(follower=current_user).exists()
 
     # Pagination, show 10 posts per page
     paginator = Paginator(posts, 10)
@@ -169,9 +162,9 @@ def profile(request, user_id):
         'page_obj': page_obj,
         'username': user.username,
         'profile_owner': user,
-        'followers':followers,
-        'following':following,
-        'isFollowing':isFollowing,
+        'followers': followers,
+        'following': following,
+        'isFollowing': isFollowing,
       
     
     })
@@ -201,5 +194,20 @@ def following(request):
    
     })
 
-def follow_unfollow(request):
-    pass
+def add_follow(request):
+    following_user = request.POST['following_user']
+    currentUser = User.objects.get(pk=request.user.id)
+    followingUserInfo = User.objects.get(username=following_user)
+    f = Follower(follower=currentUser, followed=followingUserInfo)
+    f.save()
+    user_id = followingUserInfo.id
+    return HttpResponseRedirect(reverse(profile, kwargs={'user_id': user_id}))
+
+def remove_follow(request):
+    following_user = request.POST['following_user']
+    currentUser = User.objects.get(pk=request.user.id)
+    followingUserInfo = User.objects.get(username=following_user)
+    f = Follower.objects.get(follower=currentUser, followed=followingUserInfo)
+    f.delete()
+    user_id = followingUserInfo.id
+    return HttpResponseRedirect(reverse(profile, kwargs={'user_id': user_id}))

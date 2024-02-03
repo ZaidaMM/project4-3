@@ -7,42 +7,23 @@
   <p id="followersCount">Followers: {{ followers.count }}</p>
   <p id="followingCount">Following: {{ following.count }}</p>
 
-  {% if username != user.username %}
+  {% if user != profile_owner %}
 
   <!-- Display follow/unfollow button for other users -->
-  <form action="{% url 'follow_unfollow' user_id=user.id %}" method="POST">
-    {% csrf_token %} 
-    {% if isFollowing %}
-    <p>UNFOLLOW</p>
-    <button
-      id="followBtn"
-      class="btn btn-primary mb-4 btn-sm"
-      onclick="console.log("unfollow"))"
-    >
-      Unfollow
-    </button>
-    {% else %}
-    <p>FOLLOW</p>
-    <button
-      id="followBtn"
-      class="btn btn-primary mb-4 btn-sm"
-      onclick="console.log("follow"))"
-    >
-      Follow
-    </button>
-    {% endif %}
-  
-    {% if isFollowing %}
-    <button
-      id="followBtn"
-      class="btn btn-primary mb-4 btn-sm"
-      onclick="console.log("follow"))"
-    >
-      Follow
-    </button>
-    {% endif %}
+
+  {% if isFollowing %}
+  <form action="{% url 'remove_follow' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="following_user" value="{{ profile_owner }}" />
+    <input type="submit" value="Unfollow" class="btn btn-primary mb-4 btn-sm" />
   </form>
-  {% endif %}
+  {% else %}
+  <form action="{% url 'add_follow' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="following_user" value="{{ profile_owner }}" />
+    <input type="submit" value="Follow" class="btn btn-primary mb-4 btn-sm" />
+  </form>
+  {% endif %} {% endif %}
 </div>
 <!-- Show All Posts -->
 <div id="posts-view">
@@ -50,7 +31,7 @@
     {% for post in page_obj %}
     <div class="card p-2">
       <h3>
-        <a href="{% url 'profile' user_id=post.author.id%}">{{post.user}}</a>
+        <a href="{% url 'profile' user_id=post.author.id%}">{{post.author}}</a>
       </h3>
       <p><i class="lh-1"></i>{{ post.content }}</p>
       <p class="text-secondary lh-1 small">{{ post.timestamp }}</p>

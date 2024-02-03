@@ -27,8 +27,8 @@ class Post(models.Model):
         return f"{self.user.username}: {self.content} {self.timestamp}. Likes: {self.like}"
 
 class Follower(models.Model):
-    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follows", default="")
-    followed = models.ForeignKey(User, on_delete=models.CASCADE, related_name="followed", default="")
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_who_follows", default="")
+    followed = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_who_is_followed", default="")
 
     def __str__(self):
         return f"{self.follower} follows {self.followed}"
