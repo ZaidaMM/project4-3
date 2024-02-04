@@ -7,8 +7,7 @@
 <div>
   <p id="followersCount">Followers: {{ followers.count }}</p>
   <p id="followingCount">Following: {{ following.count }}</p>
-{% if user.is_authenticated %}
-  {% if user != profile_owner %}
+  {% if user.is_authenticated %} {% if user != profile_owner %}
 
   <!-- Display follow/unfollow button for other users -->
 
@@ -24,19 +23,25 @@
     <input type="hidden" name="following_user" value="{{ profile_owner }}" />
     <input type="submit" value="Follow" class="btn btn-primary mb-4 btn-sm" />
   </form>
-  {% endif %} {% endif %}  {% endif %}
+  {% endif %} {% endif %} {% endif %}
 </div>
 <!-- Show All Posts -->
 <div id="posts-view">
   <div id="all-posts">
     {% for post in page_obj %}
-     <div class="row post card p-2">
+    <div class="row post card p-2">
       <h3>
         <a href="{% url 'profile' user_id=post.author.id%}">{{post.author}}</a>
       </h3>
       <p id="content_{{ post.id }}">{{ post.content }}</p>
       <p class="text-secondary lh-1 small">{{ post.timestamp }}</p>
       {% if user.is_authenticated %} {% if user == post.author %}
+      <p>
+        <span class="like_count" id="like_count_{{post.id}}"
+          >Likes: {{ post.like }} {% if post.like == 1 %} like {% else %} likes
+          {% endif %}
+        </span>
+      </p>
       <div>
         <button
           class="btn btn-primary btn-sm"
@@ -46,7 +51,7 @@
           Edit
         </button>
       </div>
-      
+
       <div
         class="modal fade"
         tabindex="-1"
@@ -129,9 +134,6 @@
       </p>
       {% endif %} {% endif %} {% endif %}
     </div>
-  </div>
-    {% empty %}
-    <h3>No posts available</h3>
     {% endfor %}
   </div>
 
@@ -176,8 +178,6 @@
     {% endif %}
   </nav>
 </div>
-
 {% endblock %} {% block script %}
-
 <script src="{% static 'network/index.js' %}"></script>
 {% endblock %}

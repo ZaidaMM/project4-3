@@ -8,7 +8,7 @@
   <!-- Show all posts -->
   <div id="all-posts">
     {% for post in page_obj %}
-    <div class="card mb-2 p-3">
+    <div class="card  p-2">
     <h3>
       <a href="{% url 'profile' user_id=post.author.id %}"
         >{{ post.author }}</a
