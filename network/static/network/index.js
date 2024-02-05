@@ -21,18 +21,13 @@ function submitHandler(id) {
     .then((result) => {
       content.innerHTML = result.data;
 
-      // Change state like in hidden modal
-      modal.classList.remove('show');
-      modal.setAttribute('aria-hidden', 'true');
-      modal.setAttribute('style', 'display: none');
+      content.innerHTML = result.data;
 
-      // Get modal backdrops
-      const modalsBackdrops = document.getElementsByClassName('modal-backdrop');
-
-      // Remove every modal backdrop
-      for (let i = 0; i < modalsBackdrops.length; i++) {
-        document.body.removeChild(modalsBackdrops[i]);
-      }
+      // Close the modal
+      $(modal).modal('hide');
+    })
+    .catch((error) => {
+      console.error('Error:', error.message);
     });
 }
 
